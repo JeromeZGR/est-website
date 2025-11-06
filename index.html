@@ -1,33 +1,180 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>EST — Everybody Shines Together</title>
   <style>
-    body {
-      margin: 0;
-      background: #000;
-      color: #fff;
-      font-family: Arial, Helvetica, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
+    :root{
+      --bg:#0a0b0d;      /* inky black */
+      --fg:#e9eef2;      /* soft white */
+      --sub:#9aa4ad;     /* muted grey */
+      --accent:#86e1ff;  /* sci-fi blue */
     }
-    h1 { font-size: 3rem; letter-spacing: 2px; }
-    .gold { color: #D4AF37; }
-</style>
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 800px at 50% -20%, #111828 0%, #0c0f14 40%, var(--bg) 70%),
+                  #0b0d10;
+      color:var(--fg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      overflow:hidden; /* keeps the floating emoji inside the viewport */
+    }
+
+    /* center container */
+    .wrap{
+      min-height:100%;
+      display:grid;
+      place-items:center;
+      padding:28px;
+      position:relative;
+      isolation:isolate;
+    }
+
+    /* glass panel */
+    .card{
+      text-align:center;
+      padding:28px 24px 22px;
+      border-radius:16px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow: 0 15px 60px rgba(0,0,0,.45), inset 0 0 40px rgba(134,225,255,.04);
+      backdrop-filter: blur(6px);
+      max-width:640px;
+      width:100%;
+    }
+
+    .brand{
+      font-weight:700;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:14px;
+      color:var(--accent);
+      opacity:.9;
+      margin-bottom:10px;
+    }
+
+    .title{
+      display:flex;
+      gap:.4em;
+      align-items:center;
+      justify-content:center;
+      font-size: clamp(28px, 5vw, 48px);
+      line-height:1.05;
+      margin:0 0 8px;
+      text-shadow: 0 0 12px rgba(134,225,255,.25);
+    }
+
+    /* pulsing emoji next to the title */
+    .pulse {
+      display:inline-block;
+      filter: drop-shadow(0 0 10px rgba(134,225,255,.4));
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%,100%{ transform:scale(1); opacity: .95 }
+      50%{ transform:scale(1.12); opacity: 1 }
+    }
+
+    .sub{
+      color:var(--sub);
+      margin:0 0 18px;
+      font-size: clamp(14px, 2.8vw, 16px);
+    }
+
+    /* email form */
+    form{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+    input[type="email"]{
+      width:min(420px, 100%);
+      padding:12px 14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      color:var(--fg);
+      outline:none;
+      font-size:16px;
+    }
+    input[type="email"]::placeholder{ color:#b7c0c7; opacity:.7 }
+    button{
+      padding:12px 16px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.18);
+      background: linear-gradient(180deg, #9fe8ff, #72d3ff);
+      color:#0a0b0d;
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+    }
+    button:active{ transform: translateY(1px) }
+
+    .tiny{
+      margin-top:10px;
+      font-size:12px;
+      color:#a7b0b8;
+      opacity:.9
+    }
+
+    /* floating emoji wandering around the screen */
+    .floater{
+      position:fixed;
+      left:50%;
+      top:50%;
+      translate:-50% -50%;
+      font-size: clamp(28px, 8vw, 72px);
+      pointer-events:none;
+      opacity:.15;
+      filter: drop-shadow(0 0 18px rgba(134,225,255,.35));
+      animation: floatXY 14s linear infinite;
+      z-index:-1;
+    }
+    @keyframes floatXY{
+      0%   { transform: translate(-40vw, -35vh) rotate(0deg) }
+      25%  { transform: translate( 35vw, -25vh) rotate(10deg) }
+      50%  { transform: translate( 30vw,  30vh) rotate(0deg) }
+      75%  { transform: translate(-35vw,  20vh) rotate(-10deg) }
+      100% { transform: translate(-40vw, -35vh) rotate(0deg) }
+    }
+
+    /* respect reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .pulse, .floater{ animation: none }
+    }
+  </style>
 </head>
 <body>
-<audio id="alienSound" src="EST.mp3"></audio>
-  <h1>EST — <span class="gold">Everybody Shines Together</span></h1>
-<script>
-document.addEventListener('click',() => {
-  const audio = document.getElementById('alienSound');
-  audio.play();
-});
-</script> 
+  <!-- autoplay audio you already added -->
+  <audio id="est-audio" src="est.mp3" autoplay></audio>
+
+  <!-- floating emoji (background wanderer) -->
+  <div class="floater" aria-hidden="true">👽</div>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="brand">EST — Everybody Shines Together</div>
+      <h1 class="title">
+        <span class="pulse">👽</span>
+        Coming&nbsp;Soon
+        <span class="pulse">👽</span>
+      </h1>
+      <p class="sub">Site under construction. Be first to know when we drop.</p>
+
+      <!-- EMAIL CAPTURE: swap the action with your Formspree/Resend endpoint -->
+      <form action="https://formspree.io/f/your-endpoint" method="POST">
+        <input type="email" name="email" placeholder="Enter your email" required />
+        <button type="submit">Notify me</button>
+        <input type="hidden" name="source" value="est-coming-soon" />
+      </form>
+
+      <div class="tiny">No spam. One email when we launch.</div>
+    </div>
+  </div>
 </body>
 </html>
