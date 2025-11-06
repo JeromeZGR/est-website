@@ -18,9 +18,16 @@
     }
     h1 { font-size: 3rem; letter-spacing: 2px; }
     .gold { color: #D4AF37; }
-  </style>
+</style>
 </head>
 <body>
+<audio id="alienSound" src="EST.mp3"></audio>
   <h1>EST — <span class="gold">Everybody Shines Together</span></h1>
+<script>
+document.addEventListener('click',() => {
+  const audio = document.getElementById('alienSound');
+  audio.play();
+});
+</script> 
 </body>
 </html>
