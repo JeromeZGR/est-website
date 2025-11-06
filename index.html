@@ -142,7 +142,35 @@
       75%  { transform: translate(-35vw,  20vh) rotate(-10deg) }
       100% { transform: translate(-40vw, -35vh) rotate(0deg) }
     }
+/* --- space layers --- */
+#space{
+  position: fixed;
+  inset: 0;
+  z-index: -2;          /* behind everything */
+}
 
+/* glowing planet */
+.planet{
+  position: fixed;
+  right: -10vw;
+  bottom: -10vh;
+  width: 40vh;
+  height: 40vh;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%,
+      rgba(255,255,200,.85),
+      rgba(255,215,0,.35) 35%,
+      rgba(255,170,0,.18) 55%,
+      rgba(0,0,0,0) 70%);
+  filter: blur(2px) drop-shadow(0 0 80px rgba(255,215,0,.25));
+  z-index: -1;          /* in front of stars, behind content */
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce){
+  #space { display:none; }
+}
     /* respect reduced motion */
     @media (prefers-reduced-motion: reduce){
       .pulse, .floater{ animation: none }
@@ -150,8 +178,23 @@
   </style>
 </head>
 <body>
-  <!-- autoplay audio you already added -->
-  <audio id="est-audio" src="est.mp3" autoplay></audio>
+<canvas id="space"></canvas>
+<!-- sound -->
+<audio id="alienSound" src="EST.mp3" preload="auto"></audio>
+<script>
+  // play once when user clicks or taps anywhere
+  function playAlienOnce() {
+    const audio = document.getElementById('alienSound');
+    if (audio) {
+      audio.currentTime = 0;
+      audio.play().catch(() => {}); // silently ignore autoplay block
+    }
+    document.removeEventListener('click', playAlienOnce);
+    document.removeEventListener('touchstart', playAlienOnce);
+  }
+  document.addEventListener('click', playAlienOnce, { once: true });
+  document.addEventListener('touchstart', playAlienOnce, { once: true });
+</script>
 
   <!-- floating emoji (background wanderer) -->
   <div class="floater" aria-hidden="true">👽</div>
@@ -176,5 +219,49 @@
       <div class="tiny">No spam. One email when we launch.</div>
     </div>
   </div>
+</div>
+
+<!-- ⭐ STARFIELD ANIMATION ⭐ -->
+<script>
+  const canvas = document.getElementById('space');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+
+    function fit() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', fit);
+    fit();
+
+    const STAR_COUNT = 200;
+    const stars = Array.from({ length: STAR_COUNT }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.2 + 0.3,
+      a: Math.random() * Math.PI * 2,
+      v: Math.random() * 0.015 + 0.005
+    }));
+
+    function loop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#fff';
+      for (const s of stars) {
+        s.a += s.v;
+        const flicker = 0.5 + Math.sin(s.a) * 0.5;
+        ctx.globalAlpha = flicker;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(loop);
+    }
+    loop();
+  }
+</script>
+
+</body>
+</html>
 </body>
 </html>
