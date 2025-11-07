@@ -207,16 +207,54 @@
         Coming&nbsp;Soon
         <span class="pulse">👽</span>
       </h1>
-      <p class="sub">Site under construction. Be first to know when we drop.</p>
+<form id="notify" action="https://formspree.io/f/movpgbjl" method="POST">
+  <input type="email" name="email" placeholder="Enter your email" required />
+  <button type="submit">Notify me</button>
+  <div id="formMsg" class="tiny"></div>
+</form>
+    <script>
+  const form = document.getElementById('notify');
+  const msg  = document.getElementById('formMsg');
 
-      <!-- EMAIL CAPTURE: swap the action with your Formspree/Resend endpoint -->
-      <form action="https://formspree.io/f/your-endpoint" method="POST">
-        <input type="email" name="email" placeholder="Enter your email" required />
-        <button type="submit">Notify me</button>
-        <input type="hidden" name="source" value="est-coming-soon" />
-      </form>
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('button');
+    btn.disabled = true; 
+    btn.textContent = 'Sending...';
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      });
+
+      if (res.ok) {
+        msg.textContent = '✅ You’re on the list. We’ll email you when we launch.';
+        form.reset();
+      } else {
+        msg.textContent = '⚠️ Something went wrong. Try again.';
+        btn.disabled = false; 
+        btn.textContent = 'Notify me';
+      }
+    } catch {
+      msg.textContent = '⚠️ Network error. Try again.';
+      btn.disabled = false; 
+      btn.textContent = 'Notify me';
+    }
+  });
+</script>
 
       <div class="tiny">No spam. One email when we launch.</div>
+</div> <!-- close wrap/card divs first -->
+
+<!-- then your starfield animation -->
+<script>
+  const canvas = document.getElementById('space');
+  ...
+</script>
+</body>
+</html>
     </div>
   </div>
 </div>
